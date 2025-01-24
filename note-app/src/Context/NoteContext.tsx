@@ -13,7 +13,7 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   // State for notes, editPopup, and the current note being edited
   const [notes, setNotes] = useState<NotesType[]>([]);
   const [editPopup, setEditPopup] = useState<boolean>(false);
-
+  const [colors, setColors] = useState<string[]>([]);
   const [note, setNote] = useState<NotesType>({
     note: "",
     pin: false,
@@ -45,6 +45,22 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     );
   }, []);
 
+  const setColoursFc = (action: string): void => {
+    setColors((prevColors) => {
+      const updatedNotes =
+        action === "Save"
+          ? [...notes, note]
+          : notes.map((existingNote) =>
+              existingNote.date === note.date
+                ? { ...existingNote, ...note }
+                : existingNote
+            );
+
+      const noteColors = updatedNotes.map((n) => n.colour); // Extract colors from notes
+      return Array.from(new Set(noteColors)); // Ensure unique colors
+    });
+  };
+
   return (
     <noteContext.Provider
       value={{
@@ -57,6 +73,8 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
         addNote,
         updateNote,
         deleteNote,
+        colors,
+        setColoursFc,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer, useContext, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -20,28 +20,48 @@ const noteReducer = (state: NotesType, action: ActionType): NotesType => {
 };
 
 const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
-  const { setNote, setEditPopup, notes, setNotes } = useContext(noteContext)!; // Added ! to ensure non-null context
+  const noteContextValue = useContext(noteContext);
+  if (!noteContextValue) {
+    return <div className="text-red-500 text-lg">Error: Context undefined</div>;
+  }
+
+  const { setNote, setEditPopup, notes, setNotes } = noteContextValue;
   const [state, dispatch] = useReducer(noteReducer, note);
+
+  useEffect(() => {
+    console.log("Note updated:", note);
+  }, [note]);
+
+  const updateGlobalState = (updatedNote: NotesType) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((existingNote) =>
+        existingNote.date === updatedNote.date ? updatedNote : existingNote
+      )
+    );
+  };
 
   const handleStar = () => {
     dispatch({ type: "TOGGLE_STAR" });
+    updateGlobalState({ ...note, star: !note.star });
   };
 
   const handlePin = () => {
     dispatch({ type: "TOGGLE_PIN" });
+    updateGlobalState({ ...note, pin: !note.pin });
   };
 
   const handleEdit = () => {
+    console.log("Editing note:", note);
     setEditPopup(true);
-    setNote(note);
+    setNote(note); // Ensure note is correctly passed here
   };
 
   const handleDelete = () => {
-    // Filter the notes to remove the selected note
-    const updatedNotes = notes.filter(
-      (existingNote) => existingNote.date !== note.date
+    setNotes(
+      notes.filter(
+        (existingNote) => existingNote.date !== note.date && !note.pin
+      )
     );
-    setNotes(updatedNotes); // Update notes state
   };
 
   return (
@@ -50,12 +70,10 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
       className="h-[450px] w-[350px] rounded-lg"
     >
       <div className="h-[90%] border-b border-gray-600">
-        {state.pin ? (
+        {state.pin && (
           <div className="flex justify-end">
             <TiPin />
           </div>
-        ) : (
-          ""
         )}
         <div className="ml-2 text-xl font-semibold">
           <p className="break-words">{state.note}</p>

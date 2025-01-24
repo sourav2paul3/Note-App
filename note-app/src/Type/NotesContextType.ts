@@ -17,4 +17,6 @@ export type NotesContextType = {
   // State for the current note being edited or created
   note: NotesType;
   setNote: React.Dispatch<React.SetStateAction<NotesType>>;
+  colors: string[];
+  setColoursFc: (action: string) => void;
 };

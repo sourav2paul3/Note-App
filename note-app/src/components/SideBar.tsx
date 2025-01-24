@@ -28,15 +28,35 @@ const SideBar = () => {
     );
   }
 
-  const { notes, setNotes, editPopup, setEditPopup, note, setNote } =
-    noteContextValue;
+  const {
+    notes,
+    setNotes,
+    editPopup,
+    setEditPopup,
+    note,
+    setNote,
+    colors,
+    setColoursFc,
+  } = noteContextValue;
+
   const [popup, setPopup] = useState(false);
   const [color, dispatch] = useReducer(colorReducer, "#eab676");
-  const [colors, setColors] = useState<string[]>([]);
   const [starFilter, setStarFilter] = useState<boolean>(false);
+
   const handleColorChange = (newColor: string) => {
     dispatch({ type: "CHANGE_COLOR", payload: newColor });
-    setNote((prevNote) => ({ ...prevNote, colour: newColor }));
+
+    setNote((prevNote) => {
+      const updatedNote = { ...prevNote, colour: newColor };
+
+      setNotes((prevNotes) =>
+        prevNotes.map((existingNote) =>
+          existingNote.date === updatedNote.date ? updatedNote : existingNote
+        )
+      );
+
+      return updatedNote;
+    });
   };
 
   const handleCreateNote = () => {
@@ -51,27 +71,33 @@ const SideBar = () => {
   };
 
   const saveNote = (action: string) => {
+    if (!note.note.trim()) return; // Prevent saving empty notes
+
+    const updatedNote = { ...note }; // Create a copy of the note to avoid mutation
+
     if (action === "Save") {
-      setNotes([...notes, note]);
+      setNotes((prevNotes) => [...prevNotes, updatedNote]);
     } else if (action === "Update") {
-      setNotes((prevNotes) => {
-        return prevNotes.map((existingNote) =>
-          existingNote.date === note.date
-            ? { ...existingNote, ...note }
-            : existingNote
-        );
-      });
+      setNotes((prevNotes) =>
+        prevNotes.map((existingNote) =>
+          existingNote.date === updatedNote.date ? updatedNote : existingNote
+        )
+      );
     }
-    const uniqueColors = new Set([...colors, color]);
-    setColors(Array.from(uniqueColors));
+
+    setColoursFc(action);
     setPopup(false);
     setEditPopup(false);
   };
 
-  const filteredNotes: NotesType[] = notes.filter((note) => !note.star); // Example filter
+  let filteredNotes: NotesType[] = starFilter
+    ? notes.filter((note) => note.star) // Show only starred notes
+    : notes;
 
   useEffect(() => {
-    console.log("Edit popup state changed:", editPopup);
+    filteredNotes = starFilter
+      ? notes.filter((note) => note.star) // Show only starred notes
+      : notes;
   }, [editPopup]);
 
   return (
@@ -132,7 +158,7 @@ const SideBar = () => {
       {(popup || editPopup) && (
         <div className="fixed top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center z-50">
           <div
-            style={{ backgroundColor: color }}
+            style={{ backgroundColor: note.colour }}
             className="p-6 rounded-lg shadow-xl flex flex-col gap-4 w-[600px] h-[600px] bg-white relative"
           >
             <button
@@ -162,7 +188,9 @@ const SideBar = () => {
                     <FaCircle
                       size={30}
                       fill={col}
-                      className={`${col === color ? "brightness-75" : ""}`}
+                      className={`${
+                        col === note.colour ? "brightness-75" : ""
+                      }`}
                     />
                   </button>
                 )
