@@ -22,6 +22,10 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     date: new Date().getTime(),
   });
 
+  // Filters (starFilter, colorFilter) and filteredNotes in the context
+  const [starFilter, setStarFilter] = useState<boolean>(false);
+  const [colorFilter, setColorFilter] = useState<string>("");
+
   // Add a new note to the notes array
   const addNote = useCallback((newNote: NotesType) => {
     setNotes((prevNotes) => [...prevNotes, newNote]);
@@ -45,13 +49,12 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     );
   }, []);
 
+  // Effect hook to update color list based on current notes
   useEffect(() => {
-    setColors(() => {
-      const noteColors = notes.map((n) => n.colour); // Extract colors from notes
-      return Array.from(new Set(noteColors)); // Ensure unique colors
-    });
+    const noteColors = notes.map((n) => n.colour); // Extract colors from notes
+    setColors(Array.from(new Set(noteColors))); // Ensure unique colors
   }, [notes]);
-
+  // Update colors when notes are added or updated
   const setColoursFc = (action: string): void => {
     setColors(() => {
       const updatedNotes =
@@ -82,6 +85,10 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
         deleteNote,
         colors,
         setColoursFc,
+        starFilter,
+        setStarFilter,
+        colorFilter,
+        setColorFilter,
       }}
     >
       {children}

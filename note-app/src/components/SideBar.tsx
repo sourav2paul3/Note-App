@@ -1,10 +1,11 @@
 import { FaCirclePlus, FaCircle } from "react-icons/fa6";
 import { FaRegSave, FaStar } from "react-icons/fa";
-import { useContext, useState, useReducer, useEffect } from "react";
+import { useContext, useState, useEffect, useReducer } from "react";
 import { noteContext } from "../Context/NoteContext";
 import NoteDisplay from "./NoteDisplay";
-import { NotesType } from "../Type/NotesType";
+
 import { MdFilterListAlt } from "react-icons/md";
+import { NotesType } from "../Type/NotesType";
 
 const colorReducer = (
   state: string,
@@ -20,6 +21,7 @@ const colorReducer = (
 
 const SideBar = () => {
   const noteContextValue = useContext(noteContext);
+
   if (!noteContextValue) {
     return (
       <div className="text-red-500 text-lg">
@@ -37,12 +39,15 @@ const SideBar = () => {
     setNote,
     colors,
     setColoursFc,
+    starFilter,
+    setStarFilter,
+    colorFilter,
+    setColorFilter,
   } = noteContextValue;
 
   const [popup, setPopup] = useState(false);
   const [color, dispatch] = useReducer(colorReducer, "#eab676");
-  const [starFilter, setStarFilter] = useState<boolean>(false);
-
+  const [filteredNotes, setFilteredNotes] = useState<NotesType[]>([]);
   const handleColorChange = (newColor: string) => {
     dispatch({ type: "CHANGE_COLOR", payload: newColor });
 
@@ -60,7 +65,7 @@ const SideBar = () => {
   };
 
   const handleCreateNote = () => {
-    setPopup(!popup);
+    setPopup(true);
     setNote({
       note: "",
       pin: false,
@@ -75,30 +80,59 @@ const SideBar = () => {
 
     const updatedNote = { ...note }; // Create a copy of the note to avoid mutation
 
-    if (action === "Save") {
-      setNotes((prevNotes) => [...prevNotes, updatedNote]);
-    } else if (action === "Update") {
-      setNotes((prevNotes) =>
-        prevNotes.map((existingNote) =>
+    setNotes((prevNotes) => {
+      let newNotes: NotesType[] = [];
+      if (action === "Save") {
+        newNotes = [...prevNotes, updatedNote]; // Add the new note to the array
+      } else if (action === "Update") {
+        // Use map to create a new array with the updated note
+        newNotes = prevNotes.map((existingNote) =>
           existingNote.date === updatedNote.date ? updatedNote : existingNote
-        )
-      );
-    }
+        );
+      }
+      return newNotes; // Ensure you're setting a new array
+    });
 
     setColoursFc(action);
     setPopup(false);
     setEditPopup(false);
+    setFilteredNotes([...notes]); // Ensure to trigger re-render with new array
   };
 
-  let filteredNotes: NotesType[] = starFilter
-    ? notes.filter((note) => note.star) // Show only starred notes
-    : notes;
+  useEffect(() => {
+    let updatedNotes = notes.slice();
+
+    if (starFilter) {
+      updatedNotes = updatedNotes.filter((note) => note.star); // Apply star filter
+    }
+
+    if (colorFilter) {
+      updatedNotes = updatedNotes.filter((note) => note.colour === colorFilter); // Apply color filter
+    }
+
+    setFilteredNotes(updatedNotes.slice()); // Set filtered notes after applying filters
+  }, [notes, starFilter, colorFilter]); // Trigger when `notes`, `starFilter`, or `colorFilter` changes
 
   useEffect(() => {
-    filteredNotes = starFilter
-      ? notes.filter((note) => note.star) // Show only starred notes
-      : notes;
-  }, [editPopup]);
+    // This effect will trigger when `notes` change
+    let updatedNotes = notes.slice();
+
+    if (starFilter) {
+      updatedNotes = updatedNotes.filter((note) => note.star); // Apply star filter
+    }
+
+    if (colorFilter) {
+      updatedNotes = updatedNotes.filter((note) => note.colour === colorFilter); // Apply color filter
+    }
+
+    setFilteredNotes(updatedNotes);
+    // Set filtered notes after applying filters
+  }, [notes, starFilter, colorFilter, editPopup]); // Trigger whenever `notes`, `starFilter`, or `colorFilter` change
+
+  const removeFilters = () => {
+    setStarFilter(false);
+    setColorFilter("");
+  };
 
   return (
     <div className="mt-20 flex">
@@ -121,7 +155,7 @@ const SideBar = () => {
             } transition-colors mt-5 cursor-pointer`}
           />
         </button>
-        <button className="cursor-pointer mt-5">
+        <button className="cursor-pointer mt-5" onClick={removeFilters}>
           <MdFilterListAlt size={25} />
         </button>
 
@@ -129,14 +163,16 @@ const SideBar = () => {
           {colors.map((col) => (
             <button
               key={col}
-              onClick={() => handleColorChange(col)}
-              className="cursor-pointer"
+              onClick={() => setColorFilter(col)}
+              className={"cursor-pointer"}
             >
               <FaCircle
                 size={25}
                 fill={col}
                 className={`transition-transform hover:scale-110 ${
-                  color === col ? "brightness-75" : ""
+                  colorFilter === col
+                    ? "brightness-75 border-3 rounded-full"
+                    : ""
                 }`}
               />
             </button>
