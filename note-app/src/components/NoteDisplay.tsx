@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useEffect } from "react";
+import React, { useReducer, useContext } from "react";
 import { FaStar } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { RiDeleteBin6Line } from "react-icons/ri";

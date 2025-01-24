@@ -53,7 +53,7 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   }, [notes]);
 
   const setColoursFc = (action: string): void => {
-    setColors((prevColors) => {
+    setColors(() => {
       const updatedNotes =
         action === "Save"
           ? [...notes, note]
