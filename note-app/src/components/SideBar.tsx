@@ -87,11 +87,15 @@ const SideBar = () => {
         </div>
       </div>
       {/* Notes List */}
-      <div className="flex gap-2">
-        {notes.map((note) => (
-          <NoteDisplay note={note} />
-        ))}
+      <div className="flex flex-col p-4">
+        <h1 className="text-3xl font-bold pb-2">Notes</h1>
+        <div className="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5 mt-4">
+          {notes.map((note) => (
+            <NoteDisplay note={note} />
+          ))}
+        </div>
       </div>
+
       {/* Popup Modal */}
       {popup && (
         <div className="fixed top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center z-50">
