@@ -1,4 +1,4 @@
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useEffect } from "react";
 import { NotesType } from "../Type/NotesType";
 import { NotesContextType } from "../Type/NotesContextType";
 
@@ -44,6 +44,13 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
       )
     );
   }, []);
+
+  useEffect(() => {
+    setColors(() => {
+      const noteColors = notes.map((n) => n.colour); // Extract colors from notes
+      return Array.from(new Set(noteColors)); // Ensure unique colors
+    });
+  }, [notes]);
 
   const setColoursFc = (action: string): void => {
     setColors((prevColors) => {

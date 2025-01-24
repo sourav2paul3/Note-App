@@ -28,10 +28,6 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
   const { setNote, setEditPopup, notes, setNotes } = noteContextValue;
   const [state, dispatch] = useReducer(noteReducer, note);
 
-  useEffect(() => {
-    console.log("Note updated:", note);
-  }, [note]);
-
   const updateGlobalState = (updatedNote: NotesType) => {
     setNotes((prevNotes) =>
       prevNotes.map((existingNote) =>
