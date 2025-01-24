@@ -100,20 +100,6 @@ const SideBar = () => {
   };
 
   useEffect(() => {
-    let updatedNotes = notes.slice();
-
-    if (starFilter) {
-      updatedNotes = updatedNotes.filter((note) => note.star); // Apply star filter
-    }
-
-    if (colorFilter) {
-      updatedNotes = updatedNotes.filter((note) => note.colour === colorFilter); // Apply color filter
-    }
-
-    setFilteredNotes(updatedNotes.slice()); // Set filtered notes after applying filters
-  }, [notes, starFilter, colorFilter]); // Trigger when `notes`, `starFilter`, or `colorFilter` changes
-
-  useEffect(() => {
     // This effect will trigger when `notes` change
     let updatedNotes = notes.slice();
 
@@ -235,7 +221,7 @@ const SideBar = () => {
 
             <textarea
               placeholder="Write something..."
-              className="border rounded p-2 mt-4 h-[70%] w-full resize-none text-gray-700 shadow-sm focus:ring-2 focus:ring-gray-400"
+              className="border rounded p-2 mt-4 h-[70%] w-full resize-none text-black font-semibold shadow-sm focus:ring-2 focus:ring-gray-400"
               value={note.note}
               onChange={(e) => setNote({ ...note, note: e.target.value })}
             />
