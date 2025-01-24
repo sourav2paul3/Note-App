@@ -2,6 +2,6 @@ export type NotesType = {
   colour: string;
   note: string;
   star: boolean;
-  date: Date;
+  date: number;
   pin: boolean;
 };

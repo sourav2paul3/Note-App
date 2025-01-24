@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.colorButton {
+  @apply cursor-pointer border-3 rounded-full shadow-[4px_4px_10px_rgba(0,0,0,0.2)];
+}
