@@ -28,20 +28,12 @@ const SideBar = () => {
     );
   }
 
-  const {
-    notes,
-    setNotes,
-    editPopup,
-    setEditPopup,
-    note,
-    setNote,
-    starFilter,
-    setStarFilter,
-  } = noteContextValue;
+  const { notes, setNotes, editPopup, setEditPopup, note, setNote } =
+    noteContextValue;
   const [popup, setPopup] = useState(false);
   const [color, dispatch] = useReducer(colorReducer, "#eab676");
   const [colors, setColors] = useState<string[]>([]);
-
+  const [starFilter, setStarFilter] = useState<boolean>(false);
   const handleColorChange = (newColor: string) => {
     dispatch({ type: "CHANGE_COLOR", payload: newColor });
     setNote((prevNote) => ({ ...prevNote, colour: newColor }));

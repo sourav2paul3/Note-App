@@ -13,7 +13,7 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   // State for notes, editPopup, and the current note being edited
   const [notes, setNotes] = useState<NotesType[]>([]);
   const [editPopup, setEditPopup] = useState<boolean>(false);
-  const [starFilter, setStarFilter] = useState<boolean>(false);
+
   const [note, setNote] = useState<NotesType>({
     note: "",
     pin: false,
@@ -57,8 +57,6 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
         addNote,
         updateNote,
         deleteNote,
-        starFilter,
-        setStarFilter,
       }}
     >
       {children}
