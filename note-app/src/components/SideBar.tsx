@@ -1,9 +1,10 @@
 import { FaCirclePlus, FaCircle } from "react-icons/fa6";
-import { FaRegSave } from "react-icons/fa";
-import { useContext, useState, useReducer } from "react";
+import { FaRegSave, FaStar } from "react-icons/fa";
+import { useContext, useState, useReducer, useEffect } from "react";
 import { noteContext } from "../Context/NoteContext";
 import NoteDisplay from "./NoteDisplay";
 import { NotesType } from "../Type/NotesType";
+import { MdFilterListAlt } from "react-icons/md";
 
 const colorReducer = (
   state: string,
@@ -26,17 +27,20 @@ const SideBar = () => {
       </div>
     );
   }
-  const { notes, setNotes } = noteContextValue;
+
+  const {
+    notes,
+    setNotes,
+    editPopup,
+    setEditPopup,
+    note,
+    setNote,
+    starFilter,
+    setStarFilter,
+  } = noteContextValue;
   const [popup, setPopup] = useState(false);
   const [color, dispatch] = useReducer(colorReducer, "#eab676");
   const [colors, setColors] = useState<string[]>([]);
-  const [note, setNote] = useState<NotesType>({
-    note: "",
-    pin: false,
-    colour: "#eab676",
-    star: false,
-    date: new Date().getTime(),
-  });
 
   const handleColorChange = (newColor: string) => {
     dispatch({ type: "CHANGE_COLOR", payload: newColor });
@@ -53,13 +57,30 @@ const SideBar = () => {
       date: new Date().getTime(),
     });
   };
-  const handleNoteSort = () => console.log("Note Sort");
-  const saveNote = () => {
-    setNotes([...notes, note]);
-    setPopup(!popup);
+
+  const saveNote = (action: string) => {
+    if (action === "Save") {
+      setNotes([...notes, note]);
+    } else if (action === "Update") {
+      setNotes((prevNotes) => {
+        return prevNotes.map((existingNote) =>
+          existingNote.date === note.date
+            ? { ...existingNote, ...note }
+            : existingNote
+        );
+      });
+    }
     const uniqueColors = new Set([...colors, color]);
     setColors(Array.from(uniqueColors));
+    setPopup(false);
+    setEditPopup(false);
   };
+
+  const filteredNotes: NotesType[] = notes.filter((note) => !note.star); // Example filter
+
+  useEffect(() => {
+    console.log("Edit popup state changed:", editPopup);
+  }, [editPopup]);
 
   return (
     <div className="mt-20 flex">
@@ -74,51 +95,70 @@ const SideBar = () => {
             className="text-gray-600 hover:text-gray-800"
           />
         </button>
+        <button onClick={() => setStarFilter(!starFilter)}>
+          <FaStar
+            size={25}
+            className={`${
+              starFilter ? "text-yellow-600" : "text-gray-600"
+            } transition-colors mt-5 cursor-pointer`}
+          />
+        </button>
+        <button className="cursor-pointer mt-5">
+          <MdFilterListAlt size={25} />
+        </button>
+
         <div className="flex flex-col items-center gap-4 mt-8">
           {colors.map((col) => (
-            <button key={col} className="cursor-pointer">
+            <button
+              key={col}
+              onClick={() => handleColorChange(col)}
+              className="cursor-pointer"
+            >
               <FaCircle
                 size={25}
                 fill={col}
-                className="transition-transform hover:scale-110"
+                className={`transition-transform hover:scale-110 ${
+                  color === col ? "brightness-75" : ""
+                }`}
               />
             </button>
           ))}
         </div>
       </div>
+
       {/* Notes List */}
       <div className="flex flex-col p-4">
         <h1 className="text-3xl font-bold pb-2">Notes</h1>
         <div className="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5 mt-4">
-          {notes.map((note) => (
-            <NoteDisplay note={note} setNote={setNote} />
+          {filteredNotes.map((note) => (
+            <NoteDisplay key={note.date} note={note} />
           ))}
         </div>
       </div>
 
       {/* Popup Modal */}
-      {popup && (
+      {(popup || editPopup) && (
         <div className="fixed top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center z-50">
           <div
             style={{ backgroundColor: color }}
             className="p-6 rounded-lg shadow-xl flex flex-col gap-4 w-[600px] h-[600px] bg-white relative"
           >
-            {/* Close Button */}
             <button
               className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 cursor-pointer"
-              onClick={handleCreateNote}
+              onClick={() => {
+                setPopup(false);
+                setEditPopup(false);
+              }}
             >
               ✖
             </button>
 
-            {/* Note Title */}
             <div className="flex items-center gap-4">
               <label className="text-2xl font-bold text-gray-800">
-                New Note
+                {editPopup ? "Edit Note" : "New Note"}
               </label>
             </div>
 
-            {/* Color Selector */}
             <div className="flex gap-3">
               {["#e28743", "#FF5733", "#5a91a0", "#b0c785", "#F2E8D7"].map(
                 (col) => (
@@ -130,14 +170,13 @@ const SideBar = () => {
                     <FaCircle
                       size={30}
                       fill={col}
-                      className="hover:scale-110 transition-transform"
+                      className={`${col === color ? "brightness-75" : ""}`}
                     />
                   </button>
                 )
               )}
             </div>
 
-            {/* Note Textarea */}
             <textarea
               placeholder="Write something..."
               className="border rounded p-2 mt-4 h-[70%] w-full resize-none text-gray-700 shadow-sm focus:ring-2 focus:ring-gray-400"
@@ -145,13 +184,14 @@ const SideBar = () => {
               onChange={(e) => setNote({ ...note, note: e.target.value })}
             />
 
-            {/* Save Button */}
             <button
               className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
-              onClick={saveNote}
+              onClick={() => saveNote(editPopup ? "Update" : "Save")}
             >
               <FaRegSave size={20} />
-              <span className="font-semibold text-lg">Save</span>
+              <span className="font-semibold text-lg">
+                {editPopup ? "Update" : "Save"}
+              </span>
             </button>
           </div>
         </div>

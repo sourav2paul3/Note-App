@@ -1,8 +1,10 @@
-import React, { useReducer } from "react";
-import { NotesType } from "../Type/NotesType";
+import React, { useReducer, useContext } from "react";
 import { FaStar } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdEdit } from "react-icons/md";
+import { noteContext } from "../Context/NoteContext";
+import { NotesType } from "../Type/NotesType";
 
 type ActionType = { type: "TOGGLE_STAR" | "TOGGLE_PIN" };
 
@@ -17,24 +19,29 @@ const noteReducer = (state: NotesType, action: ActionType): NotesType => {
   }
 };
 
-const NoteDisplay: React.FC<{
-  note: NotesType;
-  setNote: React.Dispatch<React.SetStateAction<NotesType>>;
-}> = ({ note, setNote }) => {
+const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
+  const { setNote, setEditPopup, notes, setNotes } = useContext(noteContext)!; // Added ! to ensure non-null context
   const [state, dispatch] = useReducer(noteReducer, note);
 
   const handleStar = () => {
     dispatch({ type: "TOGGLE_STAR" });
-    setNote((prevNote) => ({ ...prevNote, star: !prevNote.star })); // Corrected update
   };
 
   const handlePin = () => {
     dispatch({ type: "TOGGLE_PIN" });
-    setNote((prevNote) => ({ ...prevNote, star: !prevNote.star })); // Corrected update
   };
 
-  const HandleDelet = () => {
-    // setNotes(notes.filter((noteMap) => noteMap.date !== note.date));
+  const handleEdit = () => {
+    setEditPopup(true);
+    setNote(note);
+  };
+
+  const handleDelete = () => {
+    // Filter the notes to remove the selected note
+    const updatedNotes = notes.filter(
+      (existingNote) => existingNote.date !== note.date
+    );
+    setNotes(updatedNotes); // Update notes state
   };
 
   return (
@@ -56,10 +63,13 @@ const NoteDisplay: React.FC<{
       </div>
       <div className="flex justify-between items-center gap-4 py-2">
         <span>
-          <button className="px-4 cursor-pointer" onClick={handlePin}>
+          <button className="px-2 cursor-pointer" onClick={handlePin}>
             <TiPin size={20} fill={state.pin ? "black" : "gray"} />
           </button>
-          <button className="px-4 cursor-pointer" onCanPlay={HandleDelet}>
+          <button className="px-2 cursor-pointer" onClick={handleEdit}>
+            <MdEdit size={20} />
+          </button>
+          <button className="px-2 cursor-pointer" onClick={handleDelete}>
             <RiDeleteBin6Line size={20} />
           </button>
         </span>
