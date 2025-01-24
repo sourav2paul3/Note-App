@@ -53,11 +53,8 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
   };
 
   const handleDelete = () => {
-    setNotes(
-      notes.filter(
-        (existingNote) => existingNote.date !== note.date && !note.pin
-      )
-    );
+    if (!note.pin)
+      setNotes(notes.filter((existingNote) => existingNote.date !== note.date));
   };
 
   return (
@@ -84,7 +81,7 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
             <MdEdit size={20} />
           </button>
           <button className="px-2 cursor-pointer" onClick={handleDelete}>
-            <RiDeleteBin6Line size={20} />
+            <RiDeleteBin6Line size={20} fill={state.pin ? "gray" : "black"} />
           </button>
         </span>
         <p className="font-bold text-sm">
