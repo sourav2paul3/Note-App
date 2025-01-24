@@ -1,10 +1,12 @@
 import "./App.css";
 import SideBar from "./components/SideBar";
-
+import { NoteContextProvider } from "./Context/NoteContext";
 function App() {
   return (
     <div>
-      <SideBar />
+      <NoteContextProvider>
+        <SideBar />
+      </NoteContextProvider>
     </div>
   );
 }

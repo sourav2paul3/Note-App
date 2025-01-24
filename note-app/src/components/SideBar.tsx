@@ -1,7 +1,14 @@
 import { FaCirclePlus } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa6";
-
+import { useContext } from "react";
+import { noteContext } from "../Context/NoteContext";
 const SideBar = () => {
+  const noteContextValue = useContext(noteContext);
+  if (!noteContextValue) {
+    return <div>Error: noteContext is undefined</div>;
+  }
+  const { notes } = noteContextValue;
+
   const handleCreateNote = () => {
     console.log("Create Note");
   };
@@ -18,10 +25,19 @@ const SideBar = () => {
           <FaCirclePlus size={70} />
         </button>
         <div className="flex flex-col items-center gap-6 ">
-          <button onClick={handleNoteSort} className="cursor-pointer">
-            <FaCircle size={30} fill="red" />
-          </button>
+          {notes.map((note) => {
+            return (
+              <button
+                key={note.colour}
+                onClick={handleNoteSort}
+                className="cursor-pointer"
+              >
+                <FaCircle size={30} fill={note.colour} />
+              </button>
+            );
+          })}
         </div>
+        ;
       </div>
     </div>
   );
