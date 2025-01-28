@@ -123,7 +123,7 @@ const SideBar = () => {
   return (
     <div className="mt-20 flex">
       {/* Sidebar */}
-      <div className="border-r border-gray-300 w-[100px] h-[750px] flex flex-col items-center py-5 shadow-lg bg-white">
+      <div className="border-r border-gray-300 w-[100px] h-[420px] flex flex-col items-center py-5 bg-white">
         <button
           onClick={handleCreateNote}
           className="cursor-pointer hover:scale-105 transition-transform"
@@ -200,7 +200,7 @@ const SideBar = () => {
             </div>
 
             <div className="flex gap-3">
-              {["#e28743", "#FF5733", "#5a91a0", "#b0c785", "#F2E8D7"].map(
+              {["#e28743", "#FF5733", "#5a91a0", "#b0c785", "#E0D6C5"].map(
                 (col) => (
                   <button
                     key={col}
@@ -218,14 +218,16 @@ const SideBar = () => {
                 )
               )}
             </div>
-
             <textarea
               placeholder="Write something..."
-              className="border rounded p-2 mt-4 h-[70%] w-full resize-none text-black font-semibold shadow-sm focus:ring-2 focus:ring-gray-400"
+              className="border rounded p-2 mt-4 h-[70%] w-full resize-none text-black font-semibold shadow-sm"
               value={note.note}
+              maxLength={1000}
               onChange={(e) => setNote({ ...note, note: e.target.value })}
             />
-
+            <p className="text-right text-gray-600/70 t-0">
+              {note.note.length}/1000 characters
+            </p>
             <button
               className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
               onClick={() => saveNote(editPopup ? "Update" : "Save")}

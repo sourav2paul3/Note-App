@@ -64,7 +64,7 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
       <div className="flex justify-between items-center gap-4 py-2">
         <span>
           <button className="px-2 cursor-pointer" onClick={handlePin}>
-            <TiPin size={20} fill={note.pin ? "black" : "gray"} />
+            <TiPin size={20} fill={note.pin ? "green" : "gray"} />
           </button>
           <button className="px-2 cursor-pointer" onClick={handleEdit}>
             <MdEdit size={20} />
@@ -81,7 +81,7 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
           {new Date(note.date).toLocaleString()}
         </p>
         <button className="px-4 cursor-pointer" onClick={handleStar}>
-          <FaStar size={20} fill={note.star ? "black" : "gray"} />
+          <FaStar size={20} fill={note.star ? "green" : "gray"} />
         </button>
       </div>
     </div>
