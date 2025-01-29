@@ -49,7 +49,7 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
   return (
     <div
       style={{ backgroundColor: note.colour }}
-      className="h-[450px] w-[350px] sm:h-[300px] w-[350px] rounded-lg"
+      className="h-[450px] w-[350px] rounded-lg"
     >
       <div className="h-[90%] border-b border-gray-600">
         {note.pin && (
