@@ -140,14 +140,14 @@ const SideBar = () => {
 
   return (
     <div className="mt-20 flex">
-      <div className="border-r border-gray-300 w-[100px] h-[420px] flex flex-col items-center py-5 bg-white">
+      <div className="border-r border-gray-300 md:w-[100px] md:h-[420px] w-[50px] h-[200px]  flex flex-col items-center py-5 bg-white">
         <button
           onClick={handleCreateNote}
           className="cursor-pointer hover:scale-105 transition-transform"
         >
           <FaCirclePlus
             size={50}
-            className="text-gray-600 hover:text-gray-800"
+            className="text-gray-600 hover:text-gray-800 sm:w-[50px]"
           />
         </button>
         <button onClick={() => setStarFilter(!starFilter)}>
