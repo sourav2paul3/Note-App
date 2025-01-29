@@ -26,13 +26,13 @@
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5"
   },
-  "homepage": "https://sourav2paul3.github.io/Note-App",
+  "homepage": "https://sourav2paul3.github.io/Note-App/note-app",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   }
 }
