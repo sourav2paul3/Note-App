@@ -49,17 +49,17 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
   return (
     <div
       style={{ backgroundColor: note.colour }}
-      className="h-[450px] w-[350px] rounded-lg"
+      className="h-[450px] w-[350px] rounded-lg sm:w-[320px] md:w-[350px]"
     >
-      <div className="h-[90%] border-b border-gray-600">
-        <div className="ml-2 text-xl font-semibold">
-          <p className="break-words">{note.note}</p>
-        </div>
+      <div className="custom-scrollbar h-[85%] border-b border-gray-600 overflow-y-auto max-h-[85%]">
         {note.pin && (
-          <div className="flex justify-end">
+          <div className="flex justify-end p-1">
             <TiPin />
           </div>
         )}
+        <div className="ml-2 text-xl font-semibold ">
+          <p className="break-words border">{note.note}</p>
+        </div>
       </div>
       <div className="flex justify-between items-center gap-4 py-2">
         <span>

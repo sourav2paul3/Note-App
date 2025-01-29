@@ -3,3 +3,20 @@
 .colorButton {
   @apply cursor-pointer border-3 rounded-full shadow-[4px_4px_10px_rgba(0,0,0,0.2)];
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Adjust the width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888; /* Scroll thumb color */
+  border-radius: 10px; /* Optional: Make the thumb round */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker thumb when hovering */
+}
