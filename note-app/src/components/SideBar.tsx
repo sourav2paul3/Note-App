@@ -205,7 +205,7 @@ const SideBar = () => {
         </div>
         <div className="flex flex-col p-4">
           <h1 className="text-3xl font-bold pb-2">Notes</h1>
-          <div className="grid lg:grid-cols-5 grid-cols-2 gap-5 mt-4">
+          <div className="grid lg:grid-cols-4 grid-cols-2 gap-5 mt-4">
             {filteredNotes.map((note) => (
               <NoteDisplay key={note.date} note={note} />
             ))}

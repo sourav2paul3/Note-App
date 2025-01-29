@@ -53,9 +53,9 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
       </p>
       <div
         style={{ backgroundColor: note.colour }}
-        className="w-[150px] h-[220px] md:h-[450px] md:w-[350px] rounded-lg "
+        className="w-[150px] h-[220px] md:h-[450px] md:w-[350px]  rounded-lg "
       >
-        <div className="custom-scrollbar h-[85%] border-b border-gray-600 overflow-y-auto max-h-[85%]">
+        <div className="custom-scrollbar md:h-[90%] h-[85%] border-b border-gray-600 overflow-y-auto md:max-h-[90%] max-h-[85%]">
           {note.pin && (
             <div className="flex justify-end p-1">
               <TiPin />
@@ -65,23 +65,21 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
             <p className="break-words">{note.note}</p>
           </div>
         </div>
-        <div className="flex justify-between items-center gap-4 py-2">
-          <span>
-            <button className="px-2 cursor-pointer" onClick={handlePin}>
-              <TiPin size={20} fill={note.pin ? "green" : "gray"} />
-            </button>
-            <button className="px-2 cursor-pointer" onClick={handleEdit}>
-              <MdEdit size={20} />
-            </button>
-            <button
-              className="px-2 cursor-pointer"
-              onClick={handleDelete}
-              disabled={note.pin}
-            >
-              <RiDeleteBin6Line size={20} fill={note.pin ? "gray" : "black"} />
-            </button>
-          </span>
-          <button className="px-4 cursor-pointer" onClick={handleStar}>
+        <div className="flex justify-between items-center py-2">
+          <button className="px-2 cursor-pointer" onClick={handlePin}>
+            <TiPin size={20} fill={note.pin ? "green" : "gray"} />
+          </button>
+          <button className="px-2 cursor-pointer" onClick={handleEdit}>
+            <MdEdit size={20} />
+          </button>
+          <button
+            className="px-2 cursor-pointer"
+            onClick={handleDelete}
+            disabled={note.pin}
+          >
+            <RiDeleteBin6Line size={20} fill={note.pin ? "gray" : "black"} />
+          </button>
+          <button className="px-2 cursor-pointer" onClick={handleStar}>
             <FaStar size={20} fill={note.star ? "green" : "gray"} />
           </button>
         </div>
