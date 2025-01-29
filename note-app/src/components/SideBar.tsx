@@ -140,14 +140,14 @@ const SideBar = () => {
 
   return (
     <div className="mt-20 flex">
-      <div className="border-r border-gray-300 md:w-[100px] md:h-[420px] w-[50px] h-[200px]  flex flex-col items-center py-5 bg-white">
+      <div className="border-r border-gray-300 md:w-[60px] md:h-[420px] w-[60px] flex flex-col items-center py-5 bg-white">
         <button
           onClick={handleCreateNote}
           className="cursor-pointer hover:scale-105 transition-transform"
         >
           <FaCirclePlus
-            size={50}
-            className="text-gray-600 hover:text-gray-800 sm:w-[50px]"
+            size={30}
+            className="text-gray-600 hover:text-gray-800"
           />
         </button>
         <button onClick={() => setStarFilter(!starFilter)}>
@@ -205,7 +205,7 @@ const SideBar = () => {
         </div>
         <div className="flex flex-col p-4">
           <h1 className="text-3xl font-bold pb-2">Notes</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5 mt-4">
+          <div className="grid lg:grid-cols-5 grid-cols-2 gap-5 mt-4">
             {filteredNotes.map((note) => (
               <NoteDisplay key={note.date} note={note} />
             ))}
