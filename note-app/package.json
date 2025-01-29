@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://sourav2paul3.github.io/Note-App",
   "dependencies": {
     "@tailwindcss/vite": "^4.0.0",
     "react": "^18.3.1",
@@ -27,9 +26,10 @@
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5"
   },
+  "homepage": "https://sourav2paul3.github.io/Note-App",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
