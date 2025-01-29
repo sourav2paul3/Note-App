@@ -52,14 +52,14 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
       className="h-[450px] w-[350px] rounded-lg"
     >
       <div className="h-[90%] border-b border-gray-600">
+        <div className="ml-2 text-xl font-semibold">
+          <p className="break-words">{note.note}</p>
+        </div>
         {note.pin && (
           <div className="flex justify-end">
             <TiPin />
           </div>
         )}
-        <div className="ml-2 text-xl font-semibold">
-          <p className="break-words">{note.note}</p>
-        </div>
       </div>
       <div className="flex justify-between items-center gap-4 py-2">
         <span>
