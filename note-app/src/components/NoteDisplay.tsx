@@ -15,7 +15,6 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
 
   const { setNote, setEditPopup, notes, setNotes } = noteContextValue;
 
-  // Handle Star Toggle
   const handleStar = () => {
     const updatedNote = { ...note, star: !note.star };
     setNotes((prevNotes) =>
@@ -25,7 +24,6 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
     );
   };
 
-  // Handle Pin Toggle
   const handlePin = () => {
     const updatedNote = { ...note, pin: !note.pin };
     setNotes((prevNotes) =>
@@ -35,13 +33,11 @@ const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
     );
   };
 
-  // Handle Edit
   const handleEdit = () => {
     setEditPopup(true);
-    setNote(note); // Pass the note to context for editing
+    setNote(note);
   };
 
-  // Handle Delete
   const handleDelete = () => {
     setNotes(notes.filter((existingNote) => existingNote.date !== note.date));
   };

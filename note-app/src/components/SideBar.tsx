@@ -76,44 +76,41 @@ const SideBar = () => {
   };
 
   const saveNote = (action: string) => {
-    if (!note.note.trim()) return; // Prevent saving empty notes
+    if (!note.note.trim()) return;
 
-    const updatedNote = { ...note }; // Create a copy of the note to avoid mutation
+    const updatedNote = { ...note };
 
     setNotes((prevNotes) => {
       let newNotes: NotesType[] = [];
       if (action === "Save") {
-        newNotes = [...prevNotes, updatedNote]; // Add the new note to the array
+        newNotes = [...prevNotes, updatedNote];
       } else if (action === "Update") {
-        // Use map to create a new array with the updated note
         newNotes = prevNotes.map((existingNote) =>
           existingNote.date === updatedNote.date ? updatedNote : existingNote
         );
       }
-      return newNotes; // Ensure you're setting a new array
+      return newNotes;
     });
 
     setColoursFc(action);
     setPopup(false);
     setEditPopup(false);
-    setFilteredNotes([...notes]); // Ensure to trigger re-render with new array
+    setFilteredNotes([...notes]);
   };
 
   useEffect(() => {
-    // This effect will trigger when `notes` change
     let updatedNotes = notes.slice();
 
     if (starFilter) {
-      updatedNotes = updatedNotes.filter((note) => note.star); // Apply star filter
+      updatedNotes = updatedNotes.filter((note) => note.star);
     }
 
     if (colorFilter) {
-      updatedNotes = updatedNotes.filter((note) => note.colour === colorFilter); // Apply color filter
+      updatedNotes = updatedNotes.filter((note) => note.colour === colorFilter);
     }
 
     setFilteredNotes(updatedNotes);
-    // Set filtered notes after applying filters
-  }, [notes, starFilter, colorFilter, editPopup]); // Trigger whenever `notes`, `starFilter`, or `colorFilter` change
+  }, [notes, starFilter, colorFilter, editPopup]);
 
   const removeFilters = () => {
     setStarFilter(false);
@@ -183,7 +180,6 @@ const SideBar = () => {
         </div>
       </div>
 
-      {/* Notes List */}
       <div>
         <div
           style={{
@@ -213,7 +209,6 @@ const SideBar = () => {
         </div>
       </div>
 
-      {/* Popup Modal */}
       {(popup || editPopup) && (
         <div className="fixed top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center z-50">
           <div
