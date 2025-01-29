@@ -2,16 +2,24 @@ import React, { createContext, useState, useCallback, useEffect } from "react";
 import { NotesType } from "../Type/NotesType";
 import { NotesContextType } from "../Type/NotesContextType";
 
-// Create the context with initial type definitions
-export const noteContext = createContext<NotesContextType | undefined>(
+export const NoteContext = createContext<NotesContextType | undefined>(
   undefined
 );
 
 export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  // State for notes, editPopup, and the current note being edited
-  const [notes, setNotes] = useState<NotesType[]>([]);
+  const [notes, setNotes] = useState<NotesType[]>(() => {
+    try {
+      const getNotes = localStorage.getItem("notes");
+      const parsedNotes = getNotes ? JSON.parse(getNotes) : [];
+      return Array.isArray(parsedNotes) ? parsedNotes : [];
+    } catch (error) {
+      console.error("Error parsing notes from localStorage:", error);
+      return [];
+    }
+  });
+
   const [editPopup, setEditPopup] = useState<boolean>(false);
   const [colors, setColors] = useState<string[]>([]);
   const [note, setNote] = useState<NotesType>({
@@ -22,16 +30,18 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     date: new Date().getTime(),
   });
 
-  // Filters (starFilter, colorFilter) and filteredNotes in the context
+  useEffect(() => {
+    console.log("NOTES=", notes); // 🔹 Moved logging here to prevent initialization issues
+    localStorage.setItem("notes", JSON.stringify(notes)); // 🔹 Ensured it updates even when empty
+  }, [notes]);
+
   const [starFilter, setStarFilter] = useState<boolean>(false);
   const [colorFilter, setColorFilter] = useState<string>("");
 
-  // Add a new note to the notes array
   const addNote = useCallback((newNote: NotesType) => {
     setNotes((prevNotes) => [...prevNotes, newNote]);
   }, []);
 
-  // Update an existing note
   const updateNote = useCallback((updatedNote: NotesType) => {
     setNotes((prevNotes) =>
       prevNotes.map((existingNote) =>
@@ -40,7 +50,6 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     );
   }, []);
 
-  // Delete a note
   const deleteNote = useCallback((noteToDelete: NotesType) => {
     setNotes((prevNotes) =>
       prevNotes.filter(
@@ -49,12 +58,10 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     );
   }, []);
 
-  // Effect hook to update color list based on current notes
   useEffect(() => {
-    const noteColors = notes.map((n) => n.colour); // Extract colors from notes
-    setColors(Array.from(new Set(noteColors))); // Ensure unique colors
+    setColors([...new Set(notes.map((n) => n.colour))]);
   }, [notes]);
-  // Update colors when notes are added or updated
+
   const setColoursFc = (action: string): void => {
     setColors(() => {
       const updatedNotes =
@@ -66,13 +73,12 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
                 : existingNote
             );
 
-      const noteColors = updatedNotes.map((n) => n.colour); // Extract colors from notes
-      return Array.from(new Set(noteColors)); // Ensure unique colors
+      return [...new Set(updatedNotes.map((n) => n.colour))];
     });
   };
 
   return (
-    <noteContext.Provider
+    <NoteContext.Provider
       value={{
         notes,
         setNotes,
@@ -92,6 +98,6 @@ export const NoteContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
       }}
     >
       {children}
-    </noteContext.Provider>
+    </NoteContext.Provider>
   );
 };

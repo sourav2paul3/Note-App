@@ -1,7 +1,7 @@
 import { FaCirclePlus, FaCircle } from "react-icons/fa6";
 import { FaRegSave, FaStar } from "react-icons/fa";
 import { useContext, useState, useEffect, useReducer } from "react";
-import { noteContext } from "../Context/NoteContext";
+import { NoteContext } from "../Context/NoteContext";
 import NoteDisplay from "./NoteDisplay";
 
 import { MdFilterListAlt } from "react-icons/md";
@@ -20,7 +20,7 @@ const colorReducer = (
 };
 
 const SideBar = () => {
-  const noteContextValue = useContext(noteContext);
+  const noteContextValue = useContext(NoteContext);
 
   if (!noteContextValue) {
     return (
@@ -120,9 +120,26 @@ const SideBar = () => {
     setColorFilter("");
   };
 
+  const [scrollPercentage, setScrollPercentage] = useState(0);
+
+  const handleScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    setScrollPercentage(progress);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="mt-20 flex">
-      {/* Sidebar */}
       <div className="border-r border-gray-300 w-[100px] h-[420px] flex flex-col items-center py-5 bg-white">
         <button
           onClick={handleCreateNote}
@@ -167,12 +184,32 @@ const SideBar = () => {
       </div>
 
       {/* Notes List */}
-      <div className="flex flex-col p-4">
-        <h1 className="text-3xl font-bold pb-2">Notes</h1>
-        <div className="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5 mt-4">
-          {filteredNotes.map((note) => (
-            <NoteDisplay key={note.date} note={note} />
-          ))}
+      <div>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "7px",
+            background: "#ccc",
+          }}
+        >
+          <div
+            style={{
+              width: `${scrollPercentage}%`,
+              height: "100%",
+              background: "#4caf50",
+            }}
+          ></div>
+        </div>
+        <div className="flex flex-col p-4">
+          <h1 className="text-3xl font-bold pb-2">Notes</h1>
+          <div className="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5 mt-4">
+            {filteredNotes.map((note) => (
+              <NoteDisplay key={note.date} note={note} />
+            ))}
+          </div>
         </div>
       </div>
 

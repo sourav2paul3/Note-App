@@ -3,11 +3,11 @@ import { FaStar } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdEdit } from "react-icons/md";
-import { noteContext } from "../Context/NoteContext";
+import { NoteContext } from "../Context/NoteContext";
 import { NotesType } from "../Type/NotesType";
 
 const NoteDisplay: React.FC<{ note: NotesType }> = ({ note }) => {
-  const noteContextValue = useContext(noteContext);
+  const noteContextValue = useContext(NoteContext);
 
   if (!noteContextValue) {
     return <div className="text-red-500 text-lg">Error: Context undefined</div>;
